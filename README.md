@@ -2,8 +2,6 @@
 
 A bidirectional resistor color code calculator for the terminal. Part of **Rosito Bench** — a collection of pure C++17 CLI engineering utilities.
 
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/AlexRosito67)
-
 ---
 
 ## Why resistor?
