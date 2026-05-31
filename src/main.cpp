@@ -19,6 +19,7 @@
 #include <sstream>
 #include <cctype>
 #include <map>
+#include <vector>
 #include "resistor.h"
 
 // Maps CLI flags to integer codes for use in switch statements
@@ -75,7 +76,7 @@ int main(int argc, char *argv[])
     // -c and -p are mutually exclusive
     // -v without -p is invalid (tolerance is required)
     // ---------------------------------------------------------------------------
-    if (cArg && pArg || cArg && vArg || vArg && !pArg)
+    if ((cArg && pArg) || (cArg && vArg) || (vArg && !pArg))
     {
         std::cerr << "Invalid parameters format\n" << std::endl;
         printHelp();
@@ -119,7 +120,16 @@ int main(int argc, char *argv[])
             value = argv[++i];
         }
 
-        switch (flagMap.at(flag))
+        // Defensive check: Verify flag exists in map to avoid out_of_range crash
+        auto it = flagMap.find(flag);
+        if (it == flagMap.end())
+        {
+            std::cerr << "Unknown option: " << flag << std::endl;
+            printHelp();
+            return -1;
+        }
+
+        switch (it->second)
         {
         case 0: // -v: parse resistor value
             try
@@ -128,7 +138,7 @@ int main(int argc, char *argv[])
             }
             catch (const std::exception &e)
             {
-                std::cerr << "Error: " << e.what() << std::endl;
+                std::cerr << "Error parsing value: " << e.what() << std::endl;
                 return 1;
             }
             break;
@@ -140,7 +150,7 @@ int main(int argc, char *argv[])
             }
             catch (const std::exception &e)
             {
-                std::cerr << "Error: " << e.what() << std::endl;
+                std::cerr << "Error parsing tolerance: " << e.what() << std::endl;
                 return 1;
             }
             break;
@@ -152,7 +162,7 @@ int main(int argc, char *argv[])
             }
             catch (const std::exception &e)
             {
-                std::cerr << "Error: " << e.what() << std::endl;
+                std::cerr << "Error parsing colors: " << e.what() << std::endl;
                 return 1;
             }
             break;
@@ -167,14 +177,26 @@ int main(int argc, char *argv[])
     if (cArg)
     {
         if (colorValues.size() == 4)
+        {
             std::cout << "The resistor value is:  " << fourBandColorsToValue(colorValues) << std::endl;
-        if (colorValues.size() == 5)
+        }
+        else if (colorValues.size() == 5)
+        {
             std::cout << "The resistor value is:  " << fiveBandColorsToValue(colorValues) << std::endl;
+        }
+        else
+        {
+            std::cerr << "Error: Unsupported number of color bands (" 
+                      << colorValues.size() << "). Only 4 or 5 bands are supported." << std::endl;
+            return -1;
+        }
     }
 
     // Value to color bands
     if (vArg)
+    {
         std::cout << valueToColors(resistorValue, tolerance) << std::endl;
+    }
 
     return 0;
 }
