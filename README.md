@@ -117,11 +117,4 @@ If this tool saved you time, consider buying me a coffee ☕
 
 ---
 
-## 🧠 Looking for Embedded AI?
-
-If you are building hardware and want to deploy Machine Learning models without the bloat of TensorFlow or cloud dependencies, check out my other project:
-👉 [Hasaki CLI](https://github.com/AlexRosito67/hasaki) — Ultra-lightweight TinyML deployment in pure C.
-
----
-
 *Created by Alex Rosito — Valley Glen, Los Angeles, California*
